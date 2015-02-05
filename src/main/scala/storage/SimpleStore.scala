@@ -10,6 +10,10 @@ import scala.collection.immutable
  */
 
 
+/**
+ * This is to simplify storage of stored data for later use
+ * In case of multiple files upload, this should move to some sort of db
+ */
 class SimpleStore {
 
   private val lock = new ReentrantLock()

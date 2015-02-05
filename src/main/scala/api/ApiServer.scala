@@ -15,4 +15,6 @@ object ApiServer extends App {
 
   IO(Http) ! Http.Bind(service, interface = "0.0.0.0", port = 8080)
 
+  System.in.read()
+  system.shutdown()
 }

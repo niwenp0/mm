@@ -1,6 +1,5 @@
 package storage
 
-import cgta.serland.SerBuilder
 import storage.FileStats.{FileDetails, WCount, Word}
 import scala.collection.immutable
 import scala.collection.mutable
@@ -14,28 +13,26 @@ import scala.collection.mutable
 object FileStats {
 
   object Word {
-    implicit val ser = SerBuilder.reuseSerial[Word, String](_.value, apply)
     def apply(s: String): Word = new Word(s)
   }
   class Word(val value: String) extends AnyVal
 
   object WCount {
-    implicit val ser = SerBuilder.reuseSerial[WCount, Long](_.value, apply)
     def apply(c: Long): WCount = new WCount(c)
   }
   class WCount(val value: Long) extends AnyVal
 
-  object FileDetails { implicit val ser = SerBuilder.forCase(this.apply _)}
-  case class FileDetails(wordCount: Long, words: immutable.Map[Word, WCount])
+  case class FileDetails(wordCount: Long, words: immutable.Map[Word, WCount]) {
+    def prettyResult: String = s"Total words count = $wordCount.  Summary: \n" +
+      s"${words.map(kv => s"[${kv._1.value} -> ${kv._2.value}]").mkString("   ")} \n"
+  }
 }
 
-
 class FileStats(name: String) {
+  private val tmp = mutable.HashMap[String, Long]().withDefault(x => 0)
 
-  private val tmp = mutable.HashMap.empty[String, Long]
-
-  def updateWithLines(xs: Seq[String]): Unit = {
-    xs.flatMap(_.split("\\W+")).foreach(w => tmp += w -> (tmp.getOrElse(w, 0L) + 1))
+  def updateWithLine(line: String): Unit = {
+    line.split("\\W+").withFilter(_.nonEmpty) foreach (w => tmp(w) += 1)
   }
 
   def details: FileDetails = {
