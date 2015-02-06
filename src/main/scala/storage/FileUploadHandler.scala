@@ -1,14 +1,15 @@
 package storage
 
 import storage.FileStats.FileDetails
-import scala.concurrent.{ExecutionContextExecutor, Future}
+import scala.concurrent.Future
 import scala.io.Source
+import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
  * Created by niwenp0
  * 20150204 23:54
  */
-class FileUploadHandler(implicit val ec: ExecutionContextExecutor) {
+class FileUploadHandler() {
 
   private val store = new SimpleStore()
 

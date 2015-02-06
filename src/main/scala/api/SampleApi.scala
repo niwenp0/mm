@@ -26,6 +26,11 @@ trait SampleApi extends HttpService {
 
   val fileServiceRoute = respondWithMediaType(MediaTypes.`text/plain`) {
     (decodeRequest(Gzip) | decodeRequest(NoEncoding)) {
+      get{
+        pathSingleSlash{
+          complete ("Server up")
+        }
+      } ~
       (get & path("stats" / Segment)) { fname =>
         complete {
           handler.fromStore(fname).map(_.prettyResult)
